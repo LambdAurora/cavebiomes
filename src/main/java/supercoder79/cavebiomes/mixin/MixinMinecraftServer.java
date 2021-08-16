@@ -55,11 +55,11 @@ public class MixinMinecraftServer {
                             features.get(CaveBiomesConfiguredFeatures.EMERALD_GEODE));
                 }
 
-                if (config.generateLocalWaterLevels) {
+                /*if (config.generateLocalWaterLevels) {
                     CaveBiomesFeatures.addFeature(biome,
                             GenerationStep.Feature.LAKES,
                             features.get(CaveBiomesConfiguredFeatures.LOCAL_WATER_LEVELS));
-                }
+                }*/
 
                 // Use step 2- better caves uses step 1
                 CaveBiomesFeatures.addFeature(biome,

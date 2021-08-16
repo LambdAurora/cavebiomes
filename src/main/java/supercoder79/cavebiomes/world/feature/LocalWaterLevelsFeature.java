@@ -35,7 +35,7 @@ public class LocalWaterLevelsFeature extends Feature<DefaultFeatureConfig> {
             return false;
         }
 
-        ChunkRandom random2 = new ChunkRandom();
+        var random2 = new ChunkRandom();
         random2.setPopulationSeed(world.getSeed(), pos.getX(), pos.getZ());
 
         FloodFill.floodFill((ChunkRegion) world, random2, new BlockPos(pos.getX() + random2.nextInt(16), random2.nextInt(50) + 12, pos.getZ() + random2.nextInt(16)), ImmutableSet.of());

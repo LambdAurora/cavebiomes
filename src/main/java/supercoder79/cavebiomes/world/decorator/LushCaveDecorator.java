@@ -1,18 +1,18 @@
 package supercoder79.cavebiomes.world.decorator;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TallPlantBlock;
-import net.minecraft.block.VineBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.state.property.Properties;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -26,8 +26,10 @@ public class LushCaveDecorator extends CaveDecorator {
 
         // Set Moss and clay
         double density = noise.sample(pos, 44.0);
-        setBlocksAround(world, random, pos, 0.20 + Math.abs(density / 2.5), Blocks.MOSS_BLOCK.getDefaultState());
-        setBlocksAround(world, random, pos, 0.15 + (density / 3.0), Blocks.CLAY.getDefaultState());
+        setBlocksAround(world, random, pos, 0.20 + Math.abs(density / 2.5),
+                Blocks.MOSS_BLOCK.getDefaultState(), BlockTags.MOSS_REPLACEABLE);
+        setBlocksAround(world, random, pos, 0.15 + (density / 3.0),
+                Blocks.CLAY.getDefaultState(), BlockTags.LUSH_GROUND_REPLACEABLE);
 
         boolean validCeiling = true;
         boolean validFloor = true;
@@ -51,7 +53,8 @@ public class LushCaveDecorator extends CaveDecorator {
                 if (shouldSpawnWater(world, pos)) {
                     validFloor = false;
                     world.setBlockState(pos.down(), Blocks.WATER.getDefaultState(), 3);
-                    setBlocksAround(world, random, pos.down(), 0.25 + (density / 3.0), Blocks.CLAY.getDefaultState());
+                    setBlocksAround(world, random, pos.down(), 0.25 + (density / 3.0),
+                            Blocks.CLAY.getDefaultState(), BlockTags.LUSH_GROUND_REPLACEABLE);
                     if (random.nextInt(6) == 0) {
                         generateDripLeaves(world, random, pos.down());
                     }
@@ -124,17 +127,18 @@ public class LushCaveDecorator extends CaveDecorator {
 
         for (int i = 0; i < count; i++) {
             AxolotlEntity axolotl = EntityType.AXOLOTL.create(world.toServerWorld());
-            axolotl.refreshPositionAndAngles(pos, random.nextFloat() * 360,  0);
+            axolotl.refreshPositionAndAngles(pos, random.nextFloat() * 360, 0);
             axolotl.initialize(world, world.getLocalDifficulty(pos), SpawnReason.CHUNK_GENERATION, null, null);
             world.spawnEntityAndPassengers(axolotl);
         }
     }
 
-    private static void setBlocksAround(ChunkRegion world, Random random, BlockPos pos, double chance, BlockState state) {
-        for (Direction direction : Direction.values()) {
+    private static void setBlocksAround(ChunkRegion world, Random random, BlockPos pos, double chance, BlockState state,
+                                        Tag<Block> replace) {
+        for (var direction : DirectionUtil.DIRECTIONS) {
             BlockPos local = pos.offset(direction);
             if (random.nextDouble() < chance) {
-                if (world.getBlockState(local).isOf(Blocks.STONE)) {
+                if (world.getBlockState(local).isIn(replace)) {
                     world.setBlockState(local, state, 3);
                 }
             }
@@ -263,10 +267,10 @@ public class LushCaveDecorator extends CaveDecorator {
     private static boolean shouldSpawnWater(ChunkRegion world, BlockPos pos) {
         // Check 4 sides and bottom
         return isValidForWater(world, pos.down().north()) &&
-               isValidForWater(world, pos.down().south()) &&
-               isValidForWater(world, pos.down().west()) &&
-               isValidForWater(world, pos.down().east()) &&
-               isValidForWater(world, pos.down(2));
+                isValidForWater(world, pos.down().south()) &&
+                isValidForWater(world, pos.down().west()) &&
+                isValidForWater(world, pos.down().east()) &&
+                isValidForWater(world, pos.down(2));
     }
 
     private static boolean isValidForWater(ChunkRegion world, BlockPos pos) {

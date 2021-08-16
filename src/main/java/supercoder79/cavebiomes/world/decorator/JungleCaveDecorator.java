@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -31,7 +32,7 @@ public class JungleCaveDecorator extends CaveDecorator {
 
         if (this.grass) {
             //grass generation
-            for (Direction direction : Direction.values()) {
+            for (var direction : DirectionUtil.DIRECTIONS) {
                 BlockPos local = pos.offset(direction);
                 BlockState state = world.getBlockState(local);
                 if (state.isOf(Blocks.GRASS_BLOCK)) {

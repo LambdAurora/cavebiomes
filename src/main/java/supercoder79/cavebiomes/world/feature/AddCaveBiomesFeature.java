@@ -47,11 +47,11 @@ public class AddCaveBiomesFeature extends Feature<DefaultFeatureConfig> {
             return false;
         }
 
-        ChunkPos chunkPos = new ChunkPos(pos);
+        var chunkPos = new ChunkPos(pos);
         Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
 
-        BitSet mask = ((ProtoChunk)chunk).getCarvingMask(GenerationStep.Carver.AIR);
-        Set<PosEntry> positions = new HashSet<>();
+        BitSet mask = ((ProtoChunk) chunk).getCarvingMask(GenerationStep.Carver.AIR);
+        var positions = new HashSet<PosEntry>();
 
         BlockPos.Mutable mutable = pos.mutableCopy();
         for (int x = 0; x < 16; x++) {
@@ -100,12 +100,12 @@ public class AddCaveBiomesFeature extends Feature<DefaultFeatureConfig> {
         Registry<Biome> biomes = world.toServerWorld().getServer().getRegistryManager().get(Registry.BIOME_KEY);
         CaveDecorator decorator = CaveBiomesAPI.getCaveDecoratorForBiome(biomes, biome);
 
-        OpenSimplexNoise noise = new OpenSimplexNoise(world.getSeed());
+        var noise = new OpenSimplexNoise(world.getSeed());
 
         //epic underground biome based decoration
         Set<PosEntry> lowerPositions = positions.stream().filter(p -> p.pos.getY() <= threshold).collect(Collectors.toSet());
 
-        CaveDecorator[] caveBiomes = new CaveDecorator[256];
+        var caveBiomes = new CaveDecorator[256];
         BitSet overrides = new BitSet(256);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -18,7 +19,7 @@ public class IceCaveDecorator extends CaveDecorator {
         }
 
         // Try to set a packed ice block in every direction
-        for (Direction direction : Direction.values()) {
+        for (var direction : DirectionUtil.DIRECTIONS) {
             trySet(world, random, pos.offset(direction));
         }
 

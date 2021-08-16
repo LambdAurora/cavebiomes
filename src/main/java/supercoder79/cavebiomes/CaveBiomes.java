@@ -4,12 +4,14 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import supercoder79.cavebiomes.api.CaveBiomesAPI;
 import supercoder79.cavebiomes.command.*;
 import supercoder79.cavebiomes.config.ConfigData;
 import supercoder79.cavebiomes.config.ConfigIO;
+import supercoder79.cavebiomes.mixin.ChunkGeneratorSettingsAccessor;
 import supercoder79.cavebiomes.world.carver.CaveBiomeCarvers;
 import supercoder79.cavebiomes.world.carver.CaveBiomesConfiguredCarvers;
 import supercoder79.cavebiomes.world.compat.VanillaCompat;
@@ -21,7 +23,8 @@ import supercoder79.cavebiomes.world.layer.cave.*;
 
 public class CaveBiomes implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("Cave Biomes");
-	public static final String VERSION = "0.6.1";
+	public static final String NAMESPACE = "cavebiomes";
+	public static final String VERSION = "0.6.3";
 
 	public static ConfigData CONFIG;
 
@@ -45,6 +48,7 @@ public class CaveBiomes implements ModInitializer {
 		CaveBiomesAPI.registerCaveDecorator(CaveDecorators.ANDESITE);
 		CaveBiomesAPI.registerCaveDecorator(CaveDecorators.DIORITE);
 		CaveBiomesAPI.registerCaveDecorator(CaveDecorators.GRANITE);
+		CaveBiomesAPI.registerCaveDecorator(CaveDecorators.TUFF);
 
 		// Rare cave decorators
 		CaveBiomesAPI.registerCaveDecorator(CaveDecorators.COBWEB);
@@ -74,14 +78,17 @@ public class CaveBiomes implements ModInitializer {
 		}));
 
 		// Carver stuff
-		Registry.register(Registry.CARVER, new Identifier("cavebiomes", "room_carver"), CaveBiomeCarvers.ROOM);
-		Registry.register(Registry.CARVER, new Identifier("cavebiomes", "vertical_carver"), CaveBiomeCarvers.VERTICAL);
-		Registry.register(Registry.CARVER, new Identifier("cavebiomes", "horizontal_carver"), CaveBiomeCarvers.HORIZONTAL);
-		Registry.register(Registry.CARVER, new Identifier("cavebiomes", "lava_room_carver"), CaveBiomeCarvers.LAVA_ROOM);
-		Registry.register(Registry.CARVER, new Identifier("cavebiomes", "perlerp_carver"), CaveBiomeCarvers.PERLERP);
+		Registry.register(Registry.CARVER, id("room_carver"), CaveBiomeCarvers.ROOM);
+		Registry.register(Registry.CARVER, id("vertical_carver"), CaveBiomeCarvers.VERTICAL);
+		Registry.register(Registry.CARVER, id("horizontal_carver"), CaveBiomeCarvers.HORIZONTAL);
+		Registry.register(Registry.CARVER, id("lava_room_carver"), CaveBiomeCarvers.LAVA_ROOM);
+		Registry.register(Registry.CARVER, id("perlerp_carver"), CaveBiomeCarvers.PERLERP);
 
 		CaveBiomesConfiguredCarvers.init();
 		CaveBiomesConfiguredFeatures.init(CONFIG);
+
+		//noinspection ConstantConditions
+		((ChunkGeneratorSettingsAccessor) (Object) ChunkGeneratorSettings.getInstance()).setAquifers(CONFIG.generateLocalWaterLevels);
 
 		// Add enabled chests and spawners
 		CaveBiomesFeatures.addEnabledFeatures(CONFIG);
@@ -96,5 +103,9 @@ public class CaveBiomes implements ModInitializer {
 		}
 
 		LOGGER.info("[cave biomes] Your caves are cavier!");
+	}
+
+	public static Identifier id(String path) {
+		return new Identifier(NAMESPACE, path);
 	}
 }

@@ -1,5 +1,6 @@
 package supercoder79.cavebiomes.world.decorator;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.VineBlock;
@@ -8,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -20,7 +22,7 @@ public class OvergrownCaveDecorator extends CaveDecorator {
         }
 
         // Try to set a dirt block in every direction
-        for (Direction direction : Direction.values()) {
+        for (var direction : DirectionUtil.DIRECTIONS) {
             trySet(world, random, pos.offset(direction));
         }
 
@@ -40,11 +42,11 @@ public class OvergrownCaveDecorator extends CaveDecorator {
         // Generate dirt 75% of the time
         if (random.nextInt(4) != 0) {
             if (world.getBlockState(pos).isOf(Blocks.STONE)) {
-                world.setBlockState(pos, Blocks.DIRT.getDefaultState(), 3);
+                world.setBlockState(pos, Blocks.DIRT.getDefaultState(), Block.NOTIFY_ALL);
                 // Generate grass sometimes
                 if (random.nextInt(2) == 0) {
                     if (!world.getBlockState(pos.up()).isOpaque()) {
-                        world.setBlockState(pos.up(), Blocks.GRASS.getDefaultState(), 3);
+                        world.setBlockState(pos.up(), Blocks.GRASS.getDefaultState(), Block.NOTIFY_ALL);
                     }
                 }
             }
@@ -56,7 +58,8 @@ public class OvergrownCaveDecorator extends CaveDecorator {
         int height = random.nextInt(4) + 2;
 
         if (canGenerateVine(world.getBlockState(pos.offset(direction))) && world.getBlockState(pos).isAir()) {
-            world.setBlockState(pos, Blocks.VINE.getDefaultState().with(VineBlock.getFacingProperty(direction), true), 3);
+            world.setBlockState(pos, Blocks.VINE.getDefaultState().with(VineBlock.getFacingProperty(direction), true),
+                    Block.NOTIFY_ALL);
         } else {
             return;
         }
@@ -69,7 +72,8 @@ public class OvergrownCaveDecorator extends CaveDecorator {
                 return;
             }
 
-            world.setBlockState(mutable, Blocks.VINE.getDefaultState().with(VineBlock.getFacingProperty(direction), true), 3);
+            world.setBlockState(mutable, Blocks.VINE.getDefaultState().with(VineBlock.getFacingProperty(direction), true),
+                    Block.NOTIFY_ALL);
         }
     }
 
@@ -92,14 +96,14 @@ public class OvergrownCaveDecorator extends CaveDecorator {
         }
 
         for (int y = 0; y < height; y++) {
-            world.setBlockState(pos.up(y), Blocks.OAK_LOG.getDefaultState(), 3);
+            world.setBlockState(pos.up(y), Blocks.OAK_LOG.getDefaultState(), Block.NOTIFY_ALL);
         }
 
         for (Direction direction : Direction.values()) {
             BlockPos local = pos.up(height - 1).offset(direction);
 
             if (world.getBlockState(local).getMaterial().isReplaceable()) {
-                world.setBlockState(local, Blocks.OAK_LEAVES.getDefaultState(), 3);
+                world.setBlockState(local, Blocks.OAK_LEAVES.getDefaultState(), Block.NOTIFY_ALL);
             }
         }
     }

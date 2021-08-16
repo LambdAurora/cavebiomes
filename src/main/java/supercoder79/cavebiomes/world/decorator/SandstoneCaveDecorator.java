@@ -1,11 +1,13 @@
 package supercoder79.cavebiomes.world.decorator;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -18,7 +20,7 @@ public class SandstoneCaveDecorator extends CaveDecorator {
         }
 
         // Set sandstone
-        for (Direction direction : Direction.values()) {
+        for (var direction : DirectionUtil.DIRECTIONS) {
             trySet(world, random, pos.offset(direction));
         }
 
@@ -40,11 +42,11 @@ public class SandstoneCaveDecorator extends CaveDecorator {
             if (world.getBlockState(pos).isOf(Blocks.STONE)) {
                 // Generate sand and cacti sometimes
                 if (random.nextInt(8) == 0) {
-                    world.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
+                    world.setBlockState(pos, Blocks.SAND.getDefaultState(), Block.NOTIFY_ALL);
                     // Try to generate a cactus here
                     tryGenerateCactus(world, pos.up());
                 } else {
-                    world.setBlockState(pos, Blocks.SANDSTONE.getDefaultState(), 3);
+                    world.setBlockState(pos, Blocks.SANDSTONE.getDefaultState(), Block.NOTIFY_ALL);
                 }
             }
         }
@@ -52,7 +54,7 @@ public class SandstoneCaveDecorator extends CaveDecorator {
 
     private void makeBone(ChunkRegion world, BlockPos origin, int height, Direction direction) {
         for (int i = 0; i < height; i++) {
-            world.setBlockState(origin.up(i), Blocks.BONE_BLOCK.getDefaultState(), 3);
+            world.setBlockState(origin.up(i), Blocks.BONE_BLOCK.getDefaultState(), Block.NOTIFY_ALL);
         }
 
         world.setBlockState(origin.up(height).offset(direction), Blocks.BONE_BLOCK.getDefaultState().with(Properties.AXIS, direction.getAxis()), 3);
@@ -71,7 +73,7 @@ public class SandstoneCaveDecorator extends CaveDecorator {
     }
 
     private void tryGenerateCactus(ChunkRegion world, BlockPos pos) {
-        for (Direction direction : Direction.Type.HORIZONTAL) {
+        for (var direction : Direction.Type.HORIZONTAL) {
             if (world.getBlockState(pos.offset(direction)).isOpaque()) {
                 return;
             }
@@ -81,6 +83,6 @@ public class SandstoneCaveDecorator extends CaveDecorator {
             return;
         }
 
-        world.setBlockState(pos, Blocks.CACTUS.getDefaultState(), 3);
+        world.setBlockState(pos, Blocks.CACTUS.getDefaultState(), Block.NOTIFY_ALL);
     }
 }

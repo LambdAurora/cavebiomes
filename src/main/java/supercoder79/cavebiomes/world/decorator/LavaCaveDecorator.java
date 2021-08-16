@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import supercoder79.cavebiomes.api.CaveDecorator;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
 
 import java.util.Random;
@@ -31,7 +32,7 @@ public class LavaCaveDecorator extends CaveDecorator {
     }
 
     private static void setBlocksAround(ChunkRegion world, Random random, BlockPos pos, double chance, BlockState state) {
-        for (Direction direction : Direction.values()) {
+        for (var direction : DirectionUtil.DIRECTIONS) {
             BlockPos local = pos.offset(direction);
             if (random.nextDouble() < chance) {
                 if (world.getBlockState(local).isOf(Blocks.STONE)) {

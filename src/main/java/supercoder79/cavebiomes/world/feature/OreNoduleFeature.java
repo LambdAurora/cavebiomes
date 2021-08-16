@@ -1,5 +1,6 @@
 package supercoder79.cavebiomes.world.feature;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.FluidTags;
@@ -10,7 +11,10 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
+import supercoder79.cavebiomes.util.DirectionUtil;
 import supercoder79.cavebiomes.world.noise.OpenSimplexNoise;
+import supercoder79.cavebiomes.world.state_provider.BlockStateReplacer;
+import supercoder79.cavebiomes.world.state_provider.BlockStateReplacers;
 
 import java.util.Random;
 
@@ -60,20 +64,25 @@ public class OreNoduleFeature extends Feature<DefaultFeatureConfig> {
                             world.setBlockState(mutable, Blocks.AIR.getDefaultState(), 3);
                         }
 
-                        for (Direction direction : Direction.values()) {
+                        for (var direction : DirectionUtil.DIRECTIONS) {
                             BlockPos local = mutable.offset(direction);
 
                             if (random.nextInt(Math.max(y / 2, 12)) == 0) {
-                                if (world.getBlockState(local).isOpaque()) {
+                                BlockState toReplaceState = world.getBlockState(local);
+                                if (toReplaceState.isOpaque()) {
                                     double oreSelector = this.oreNoise.sample(local.getX() / 140.0, local.getZ() / 140.0);
-                                    BlockState state = oreSelector > 0 ? Blocks.DIAMOND_ORE.getDefaultState() : Blocks.EMERALD_ORE.getDefaultState();
+                                    BlockStateReplacer replacer = oreSelector > 0 ? BlockStateReplacers.DIAMOND_ORE_STATE_REPLACER
+                                            : BlockStateReplacers.EMERALD_ORE_STATE_REPLACER;
 
                                     // Normalize for selection
                                     if (random.nextDouble() > Math.abs(oreSelector)) {
-                                        state = Blocks.LAPIS_ORE.getDefaultState();
+                                        replacer = BlockStateReplacers.LAPIS_ORE_STATE_REPLACER;
                                     }
 
-                                    world.setBlockState(local, state, 3);
+                                    BlockState state = replacer.provide(world, random, local, toReplaceState);
+                                    if (state != null) {
+                                        world.setBlockState(local, state, Block.NOTIFY_ALL);
+                                    }
                                 }
                             }
                         }

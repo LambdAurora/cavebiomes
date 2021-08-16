@@ -15,6 +15,7 @@ import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.heightprovider.UniformHeightProvider;
 import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider;
+import supercoder79.cavebiomes.CaveBiomes;
 import supercoder79.cavebiomes.config.ConfigData;
 
 public class CaveBiomesConfiguredFeatures {
@@ -29,16 +30,15 @@ public class CaveBiomesConfiguredFeatures {
     public static RegistryKey<ConfiguredFeature<?, ?>> EMERALD_GEODE;
 
     public static void init(ConfigData config) {
-        CAVE_BIOMES = register(new Identifier("cavebiomes", "cave_biomes"), CaveBiomesFeatures.CAVE_BIOMES.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
-        LOCAL_WATER_LEVELS = register(new Identifier("cavebiomes", "local_water_levels"), CaveBiomesFeatures.LOCAL_WATER_LEVELS.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
-        ORE_NODULE = register(new Identifier("cavebiomes", "ore_nodule"), CaveBiomesFeatures.ORE_NODULE.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
-        CAVERN_CHEST = register(new Identifier("cavebiomes", "cavern_chest"), CaveBiomesFeatures.CAVERN_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.cavernChestRarity));
-        SPELUNKERS_CHEST = register(new Identifier("cavebiomes", "spelunkers_chest"), CaveBiomesFeatures.SPELUNKERS_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.spelunkersChestRarity));
-        NETHER_CHEST = register(new Identifier("cavebiomes", "nether_chest"), CaveBiomesFeatures.NETHER_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.netherChestRarity));
-        CAVE_SPAWNER = register(new Identifier("cavebiomes", "cave_spawner"), CaveBiomesFeatures.CAVE_SPAWNER.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.normalSpawnerRarity));
-        RARE_CAVE_SPAWNER = register(new Identifier("cavebiomes", "rare_cave_spawner"), CaveBiomesFeatures.RARE_CAVE_SPAWNER.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.rareSpawnerRarity));
-        EMERALD_GEODE = register(new Identifier("cavebiomes", "emerald_geode"), EMERALD_GEODE_FEATURE);
-
+        CAVE_BIOMES = register(CaveBiomes.id("cave_biomes"), CaveBiomesFeatures.CAVE_BIOMES.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
+        LOCAL_WATER_LEVELS = register(CaveBiomes.id("local_water_levels"), CaveBiomesFeatures.LOCAL_WATER_LEVELS.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
+        ORE_NODULE = register(CaveBiomes.id("ore_nodule"), CaveBiomesFeatures.ORE_NODULE.configure(FeatureConfig.DEFAULT).decorate(Decorator.NOPE.configure(NopeDecoratorConfig.INSTANCE)));
+        CAVERN_CHEST = register(CaveBiomes.id("cavern_chest"), CaveBiomesFeatures.CAVERN_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.cavernChestRarity));
+        SPELUNKERS_CHEST = register(CaveBiomes.id("spelunkers_chest"), CaveBiomesFeatures.SPELUNKERS_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.spelunkersChestRarity));
+        NETHER_CHEST = register(CaveBiomes.id("nether_chest"), CaveBiomesFeatures.NETHER_CHEST.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.netherChestRarity));
+        CAVE_SPAWNER = register(CaveBiomes.id("cave_spawner"), CaveBiomesFeatures.CAVE_SPAWNER.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.normalSpawnerRarity));
+        RARE_CAVE_SPAWNER = register(CaveBiomes.id("rare_cave_spawner"), CaveBiomesFeatures.RARE_CAVE_SPAWNER.configure(FeatureConfig.DEFAULT).spreadHorizontally().applyChance(config.rareSpawnerRarity));
+        EMERALD_GEODE = register(CaveBiomes.id("emerald_geode"), EMERALD_GEODE_FEATURE);
     }
 
     private static RegistryKey<ConfiguredFeature<?, ?>> register(Identifier name, ConfiguredFeature<?, ?> value) {
